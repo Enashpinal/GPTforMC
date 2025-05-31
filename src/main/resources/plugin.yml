@@ -1,0 +1,21 @@
+name: GPTforMC
+version: 1.0
+main: com.mc.gptformc.GPTforMC
+api-version: 1.13
+commands:
+  gpt:
+    description: GPT管理命令
+    usage: /<command> <create|list|remove|set|config|web|reload>
+permissions:
+  gpt.create:
+    description: 允许创建AI
+    default: op
+  gpt.use:
+    description: 允许使用AI
+    default: true
+  gpt.admin:
+    description: 允许管理所有AI
+    default: op
+  gpt.bypass:
+    description: 绕过AI数量限制
+    default: op

@@ -1,0 +1,93 @@
+# GPTforMC 插件配置文件
+# 配置插件的全局设置，AI 独立配置默认继承全局配置
+
+# OpenAI 配置
+openai:
+  # API 请求的 URL 地址
+  # 推荐使用Chatanywhere免费转发API，支持deepseek-1/deepseek-v3/gpt-3.5-turbo/gpt-4o-mini等模型
+  api-url: "https://api.openai.com/v1/chat/completions"
+
+  # OpenAI API 密钥
+  api-key: "sk-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+
+  # 默认使用的 OpenAI 模型英文 ID
+  model: "gpt-4o-mini"
+
+  # API 请求的超时时间（ms）
+  # 范围: 1000 - 30000，建议值： 10000
+  timeout: 10000
+
+  # 最大记忆轮次
+  # 控制 AI 保留的对话历史记录条数（每条记录包括用户输入和 AI 回复）
+  # 范围: 0 - 20，0 表示不保留记忆
+  memory_rounds: 4
+
+  # 控制 AI 回答的随机性
+  # 范围: 0.0 - 2.0，值越高回答越随机，值越低回答越固定
+  temperature: 0.7
+
+  # 核采样参数，控制生成内容的多样性
+  # 范围: 0.0 - 1.0，值越低越倾向于高概率词汇
+  top_p: 1.0
+
+  # 最大生成 Token 数
+  # 控制 AI 回答的长度，1 Token 约为 0.75 个英文单词或 1-2 个中文字符
+  max_tokens: 500
+
+  # 话题新鲜度惩罚
+  # 范围: -2.0 - 2.0，值越高越
+  presence_penalty: 0.0
+
+  # 频率惩罚度
+  # 范围: -2.0 - 2.0，值越高越减少重复词汇
+  frequency_penalty: 0.0
+
+  # 是否强制添加提示词
+  force_system_prompt: true
+
+  # AI 消息的默认颜色代码
+  # 使用 Minecraft 颜色代码
+  # 参考: https://minecraft.fandom.com/wiki/Formatting_codes
+  message_color: "&a"
+
+  # 玩家消息的格式化模板
+  # 占位符: {player} 表示玩家名称，{message} 表示玩家消息
+  message_format: "用户{player}说：{message}"
+
+# 权限组配置
+permission-groups:
+  # 默认玩家组（普通玩家）
+  default:
+    # 允许创建的最大 AI 数量
+    # 范围: 0 - 无限制，0 表示禁止创建
+    max-ai: 0
+
+    # 是否允许创建 AI
+    # 默认值: false
+    gpt.create: false
+
+    # 是否允许使用 AI（触发 AI 回复）
+    gpt.use: true
+
+    # 是否具有管理员权限（可操作所有 AI）
+    gpt.admin: false
+
+    # 是否绕过 AI 数量限制
+    gpt.bypass: false
+
+  # 管理员组
+  admin:
+    # 允许创建的最大 AI 数量
+    max-ai: 100
+
+    # 是否允许创建 AI
+    gpt.create: true
+
+    # 是否允许使用 AI
+    gpt.use: true
+
+    # 是否具有管理员权限
+    gpt.admin: true
+
+    # 是否绕过 AI 数量限制
+    gpt.bypass: true
