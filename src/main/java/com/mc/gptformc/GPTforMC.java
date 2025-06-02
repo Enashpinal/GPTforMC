@@ -21,7 +21,6 @@ public class GPTforMC extends JavaPlugin implements Listener {
     private ConfigManager configManager;
     private AIManager aiManager;
     private OpenAIHandler openAIHandler;
-    private AuthManager authManager;
     private Logger logger;
 
     @Override
@@ -29,7 +28,6 @@ public class GPTforMC extends JavaPlugin implements Listener {
         instance = this;
         logger = getLogger();
         configManager = new ConfigManager(this);
-        authManager = new AuthManager(this);
         aiManager = new AIManager(this);
         openAIHandler = new OpenAIHandler(this);
         getServer().getPluginManager().registerEvents(this, this);
@@ -60,9 +58,6 @@ public class GPTforMC extends JavaPlugin implements Listener {
         return openAIHandler;
     }
 
-    public AuthManager getAuthManager() {
-        return authManager;
-    }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
