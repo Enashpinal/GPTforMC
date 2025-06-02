@@ -43,7 +43,7 @@ public class ConfigManager {
     }
 
     public void setGlobalConfig(Player player, String option, String[] values) {
-        if (player != null && !player.isOp()) {
+        if (player != null && !hasPermission(player, "gpt.config") && !hasPermission(player, "gpt.admin")) {
             player.sendMessage("你没有权限修改全局配置");
             return;
         }
@@ -113,5 +113,11 @@ public class ConfigManager {
 
     public String getPlayerGroup(Player player) {
         return player.isOp() ? "admin" : "default";
+    }
+
+    private boolean hasPermission(Player player, String permission) {
+        if (player == null || player.isOp()) return true;
+        String group = getPlayerGroup(player);
+        return config.getBoolean("permission-groups." + group + "." + permission, false);
     }
 }
