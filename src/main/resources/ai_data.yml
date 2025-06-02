@@ -38,3 +38,5 @@ GPT-4o-mini:
       content: Hello! How can I assist you today?
   memories: []
   # AI 的对话记忆，存储用户和 AI 的历史对话，默认为空
+  allow_default_edit: false
+  # 是否允许默认权限组（普通玩家）编辑或删除此AI，默认为false（仅管理员创建的AI）
