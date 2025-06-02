@@ -63,8 +63,16 @@ permission-groups:
     max-ai: 0
 
     # 是否允许创建 AI
-    # 默认值: false
     gpt.create: false
+
+    # 是否允许删除 AI
+    gpt.remove: false
+
+    # 是否允许编辑 AI 设置
+    gpt.edit: false
+
+    # 是否允许修改全局配置
+    gpt.config: false
 
     # 是否允许使用 AI（触发 AI 回复）
     gpt.use: true
@@ -82,6 +90,15 @@ permission-groups:
 
     # 是否允许创建 AI
     gpt.create: true
+
+    # 是否允许删除 AI
+    gpt.remove: true
+
+    # 是否允许编辑 AI 设置
+    gpt.edit: true
+
+    # 是否允许修改全局配置
+    gpt.config: true
 
     # 是否允许使用 AI
     gpt.use: true
