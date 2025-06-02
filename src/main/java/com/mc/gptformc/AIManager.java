@@ -44,6 +44,7 @@ public class AIManager {
             }
             return;
         }
+        boolean allowDefaultEdit = player != null && !hasPermission(player, "gpt.admin");
         AIConfig config = new AIConfig(
                 name,
                 new ArrayList<>(Collections.singletonList(new TriggerWord(name, 1))),
@@ -59,7 +60,8 @@ public class AIManager {
                 new ArrayList<>(),
                 new ArrayList<>(),
                 plugin.getConfigManager().getConfig().getString("openai.message_color", "&a"),
-                plugin.getConfigManager().getConfig().getString("openai.message_format", "用户{player}说：{message}")
+                plugin.getConfigManager().getConfig().getString("openai.message_format", "用户{player}说：{message}"),
+                allowDefaultEdit
         );
         aiConfigs.put(name, config);
         saveAI(name);
@@ -80,9 +82,11 @@ public class AIManager {
             }
             return;
         }
-        if (player != null && !hasPermission(player, "gpt.admin")) {
-            player.sendMessage("你无权删除此AI");
-            return;
+        if (player != null && !hasPermission(player, "gpt.admin") && !hasPermission(player, "gpt.remove")) {
+            if (!config.isAllowDefaultEdit()) {
+                player.sendMessage("你无权删除此AI");
+                return;
+            }
         }
         aiConfigs.remove(name);
         saveAI(name);
@@ -153,9 +157,11 @@ public class AIManager {
             }
             return;
         }
-        if (player != null && !hasPermission(player, "gpt.admin")) {
-            player.sendMessage("你无权清除此AI的记忆");
-            return;
+        if (player != null && !hasPermission(player, "gpt.admin") && !hasPermission(player, "gpt.edit")) {
+            if (!config.isAllowDefaultEdit()) {
+                player.sendMessage("你无权清除此AI的记忆");
+                return;
+            }
         }
         if (config.isForceSystemPrompt()) {
             List<Memory> systemMemories = config.getMemories().stream()
@@ -184,9 +190,11 @@ public class AIManager {
             }
             return;
         }
-        if (player != null && !hasPermission(player, "gpt.admin")) {
-            player.sendMessage("你无权修改此AI配置");
-            return;
+        if (player != null && !hasPermission(player, "gpt.admin") && !hasPermission(player, "gpt.edit")) {
+            if (!config.isAllowDefaultEdit()) {
+                player.sendMessage("你无权修改此AI配置");
+                return;
+            }
         }
         try {
             switch (option.toLowerCase()) {
@@ -246,6 +254,9 @@ public class AIManager {
                 case "message_format":
                     config.setMessageFormat(String.join(" ", values));
                     break;
+                case "allow_default_edit":
+                    config.setAllowDefaultEdit(Boolean.parseBoolean(values[0]));
+                    break;
                 default:
                     if (player != null) {
                         player.sendMessage("未知配置选项: " + option);
@@ -303,7 +314,8 @@ public class AIManager {
                                 .map(m -> new Memory(m.get("role"), m.get("content")))
                                 .collect(Collectors.toList()),
                         (String) data.getOrDefault("message_color", plugin.getConfigManager().getConfig().getString("openai.message_color", "&a")),
-                        (String) data.getOrDefault("message_format", plugin.getConfigManager().getConfig().getString("openai.message_format", "用户{player}说：{message}"))
+                        (String) data.getOrDefault("message_format", plugin.getConfigManager().getConfig().getString("openai.message_format", "用户{player}说：{message}")),
+                        (Boolean) data.getOrDefault("allow_default_edit", false)
                 );
                 aiConfigs.put(key, config);
                 loadedAIs++;
@@ -354,11 +366,12 @@ public class AIManager {
         private final List<Memory> memories;
         private String messageColor;
         private String messageFormat;
+        private boolean allowDefaultEdit;
 
         public AIConfig(String name, List<TriggerWord> triggerWords, double temperature, double topP,
                         int maxTokens, double presencePenalty, double frequencyPenalty, boolean force_system_prompt,
                         int maxMemory, String model, int timeout, List<Prompt> prompts, List<Memory> memories,
-                        String messageColor, String messageFormat) {
+                        String messageColor, String messageFormat, boolean allowDefaultEdit) {
             this.name = name;
             this.triggerWords = triggerWords;
             this.temperature = temperature;
@@ -374,6 +387,7 @@ public class AIManager {
             this.memories = memories;
             this.messageColor = messageColor;
             this.messageFormat = messageFormat;
+            this.allowDefaultEdit = allowDefaultEdit;
         }
 
         public String getName() {
@@ -480,6 +494,14 @@ public class AIManager {
             this.messageFormat = messageFormat;
         }
 
+        public boolean isAllowDefaultEdit() {
+            return allowDefaultEdit;
+        }
+
+        public void setAllowDefaultEdit(boolean allowDefaultEdit) {
+            this.allowDefaultEdit = allowDefaultEdit;
+        }
+
         public Map<String, Object> serialize() {
             Map<String, Object> data = new HashMap<>();
             data.put("trigger_words", triggerWords.stream()
@@ -517,6 +539,7 @@ public class AIManager {
                     .collect(Collectors.toList()));
             data.put("message_color", messageColor);
             data.put("message_format", messageFormat);
+            data.put("allow_default_edit", allowDefaultEdit);
             return data;
         }
     }
